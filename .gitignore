@@ -1,0 +1,36 @@
+## [Visual Studio]
+# Các file build và tệp tin thực thi (Binary)
+bin/
+obj/
+[Aa]pp_Data/
+
+# Các file cấu hình người dùng và bộ nhớ đệm của VS
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## [NuGet]
+# Không nên đẩy các gói thư viện NuGet lên vì chúng sẽ tự tải về khi build
+packages/
+*.nuget.props
+*.nuget.targets
+
+## [Frontend - Node.js]
+# Vì bạn có cả Frontend, hãy chặn thư mục thư viện và build của nó
+node_modules/
+dist/
+build/
+.ntvs_analysis.dat
+.env
+.env.local
+
+## [Database]
+# Chặn các file database thực tế, chỉ nên đẩy file script .sql
+*.mdf
+*.ldf
+*.sdf
+
+## [Logs]
+*.log

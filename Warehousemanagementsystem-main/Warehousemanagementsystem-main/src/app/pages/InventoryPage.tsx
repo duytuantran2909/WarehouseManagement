@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { ClipboardCheck, AlertTriangle, CheckCircle } from "lucide-react";
 
+// Định nghĩa interface cho một mục hàng tồn kho
 interface InventoryItem {
-  id: string;
-  product: string;
-  sku: string;
-  systemStock: number;
-  actualStock: number;
-  difference: number;
-  status: "match" | "over" | "under";
+  id: string; // ID duy nhất của mục hàng
+  product: string; // Tên sản phẩm
+  sku: string; // Mã SKU của sản phẩm
+  systemStock: number; // Số lượng tồn kho theo hệ thống
+  actualStock: number; // Số lượng tồn kho thực tế sau khi kiểm tra
+  difference: number; // Chênh lệch giữa tồn kho thực tế và hệ thống
+  status: "match" | "over" | "under"; // Trạng thái: khớp, thừa, hoặc thiếu
 }
 
+// Dữ liệu mẫu cho các mục hàng tồn kho (sẽ được thay thế bằng dữ liệu thực từ API)
 const mockInventory: InventoryItem[] = [
   {
     id: "1",
@@ -59,21 +61,26 @@ const mockInventory: InventoryItem[] = [
   },
 ];
 
+// Component chính cho trang kiểm kho
 export function InventoryPage() {
+  // State để lưu trữ danh sách hàng tồn kho
   const [inventory, setInventory] = useState<InventoryItem[]>(mockInventory);
+  // State để theo dõi mục hàng đang được chỉnh sửa (ID của mục đó)
   const [editMode, setEditMode] = useState<string | null>(null);
+  // State để lưu giá trị số lượng thực tế đang nhập
   const [actualCount, setActualCount] = useState<string>("");
 
+  // Hàm xử lý cập nhật số lượng tồn kho thực tế cho một mục hàng
   const handleUpdateStock = (id: string) => {
     setInventory(
       inventory.map((item) => {
         if (item.id === id) {
-          const actual = parseInt(actualCount);
-          const diff = actual - item.systemStock;
+          const actual = parseInt(actualCount); // Chuyển đổi giá trị nhập thành số nguyên
+          const diff = actual - item.systemStock; // Tính chênh lệch
           return {
             ...item,
-            actualStock: actual,
-            difference: diff,
+            actualStock: actual, // Cập nhật tồn kho thực tế
+            difference: diff, // Cập nhật chênh lệch
             // Quy ước trạng thái dựa trên chênh lệch để thống nhất màu và nhãn hiển thị
             status:
               diff === 0 ? "match" : diff > 0 ? "over" : ("under" as const),
@@ -82,16 +89,18 @@ export function InventoryPage() {
         return item;
       })
     );
-    setEditMode(null);
-    setActualCount("");
+    setEditMode(null); // Thoát chế độ chỉnh sửa
+    setActualCount(""); // Xóa giá trị nhập
   };
 
+  // Tính toán số lượng mục hàng theo từng trạng thái để hiển thị thống kê
   const matchCount = inventory.filter((i) => i.status === "match").length;
   const overCount = inventory.filter((i) => i.status === "over").length;
   const underCount = inventory.filter((i) => i.status === "under").length;
 
   return (
     <div className="space-y-6">
+      {/* Phần tiêu đề của trang */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Kiểm kho</h1>
         <p className="text-gray-600 mt-1">
@@ -99,7 +108,7 @@ export function InventoryPage() {
         </p>
       </div>
 
-      {/* Stats */}
+      {/* Phần thống kê tổng quan */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <p className="text-sm text-gray-600">Tổng sản phẩm</p>
@@ -123,10 +132,11 @@ export function InventoryPage() {
         </div>
       </div>
 
-      {/* Inventory Table */}
+      {/* Bảng hiển thị danh sách hàng tồn kho */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
+            {/* Tiêu đề bảng */}
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="text-left px-6 py-4 text-sm font-semibold text-gray-900">
@@ -152,6 +162,7 @@ export function InventoryPage() {
                 </th>
               </tr>
             </thead>
+            {/* Nội dung bảng */}
             <tbody className="divide-y divide-gray-200">
               {inventory.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
@@ -167,6 +178,7 @@ export function InventoryPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
+                    {/* Hiển thị input nếu đang chỉnh sửa, ngược lại hiển thị giá trị */}
                     {editMode === item.id ? (
                       <input
                         type="number"
@@ -197,6 +209,7 @@ export function InventoryPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
+                      {/* Hiển thị icon và nhãn dựa trên trạng thái */}
                       {item.status === "match" && (
                         <>
                           <CheckCircle className="w-5 h-5 text-green-600" />
@@ -218,6 +231,7 @@ export function InventoryPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
+                    {/* Hiển thị nút lưu/hủy nếu đang chỉnh sửa, ngược lại hiển thị nút kiểm tra */}
                     {editMode === item.id ? (
                       <div className="flex gap-2">
                         <button

@@ -51,6 +51,7 @@ export function LoginPage() {
   };
 
   return (
+    // Container chính của trang đăng nhập với background và layout
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center p-4 relative"
       style={{
@@ -61,6 +62,7 @@ export function LoginPage() {
       {/* Lớp phủ Gradient giúp giao diện trông sang trọng và làm nổi bật Form */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-indigo-900/90"></div>
 
+      // Card chứa form đăng nhập
       <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 backdrop-blur-sm">
         {/* LOGO SECTION */}
         <div className="flex justify-center mb-6">

@@ -1,6 +1,26 @@
+// ============================================================================
+// IMPORT CÁC THƯ VIỆN VÀ COMPONENTS
+// ============================================================================
+// useState: Hook React để quản lý state (search query, filter type)
+// Icons từ lucide-react:
+// - Search: Icon tìm kiếm
+// - ArrowDownToLine: Icon mũi tên xuống (nhập kho)
+// - ArrowUpFromLine: Icon mũi tên lên (xuất kho)
+// - Filter: Icon lọc dữ liệu
 import { useState } from "react";
 import { Search, ArrowDownToLine, ArrowUpFromLine, Filter } from "lucide-react";
 
+// ============================================================================
+// ĐỊNH NGHĨA KIỂU DỮ LIỆU: TRANSACTION (GIAO DỊCH)
+// ============================================================================
+// Interface này định nghĩa cấu trúc của mỗi giao dịch xuất/nhập kho
+// - id: Mã định danh duy nhất cho giao dịch
+// - type: Loại giao dịch ("in" = nhập kho, "out" = xuất kho)
+// - product: Tên sản phẩm liên quan đến giao dịch
+// - quantity: Số lượng sản phẩm (bao nhiêu cái được nhập/xuất)
+// - date: Ngày giờ giao dịch (định dạng: "YYYY-MM-DD HH:mm")
+// - person: Người liên quan (nhà cung cấp hoặc khách hàng)
+// - reference: Mã phiếu (PN-001, PX-001, v.v...)
 interface Transaction {
   id: string;
   type: "in" | "out";
@@ -11,6 +31,11 @@ interface Transaction {
   reference: string;
 }
 
+// ============================================================================
+// DỮ LIỆU MẪU: 6 GIAO DỊCH XUẤT/NHẬP
+// ============================================================================
+// Đây là dữ liệu giả để demo, trong thực tế sẽ lấy từ API/Database
+// Bao gồm 3 giao dịch nhập (type: "in") và 3 giao dịch xuất (type: "out")
 const mockTransactions: Transaction[] = [
   {
     id: "1",
@@ -68,22 +93,43 @@ const mockTransactions: Transaction[] = [
   },
 ];
 
+// ============================================================================
+// COMPONENT CHÍNH: TRANG LỊCH SỬ XUẤT NHẬP
+// ============================================================================
+// Component này hiển thị toàn bộ giao dịch xuất/nhập kho
+// Bao gồm: lọc dữ liệu, thống kê, bảng giao dịch
 export function StockHistoryPage() {
+  // ========== STATE QUẢN LÝ TÌM KIẾM VÀ LỌC ==========
+  // searchQuery: Từ khóa tìm kiếm (sản phẩm hoặc mã phiếu)
+  // filterType: Loại giao dịch cần lọc (all, in, out)
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"all" | "in" | "out">("all");
 
+  // ========== HÀM LỌC DỮ LIỆU ==========
+  // Lọc danh sách giao dịch dựa trên:
+  // 1. Tìm kiếm: Tên sản phẩm hoặc mã phiếu chứa searchQuery
+  // 2. Loại giao dịch: Nhập (in) hoặc Xuất (out)
   const filteredTransactions = mockTransactions.filter((transaction) => {
+    // Kiểm tra tìm kiếm: Product hoặc Reference chứa query text
     const matchesSearch =
       transaction.product.toLowerCase().includes(searchQuery.toLowerCase()) ||
       transaction.reference.toLowerCase().includes(searchQuery.toLowerCase());
+    // Kiểm tra loại giao dịch: "all" = không lọc, "in"/"out" = lọc theo type
     const matchesType =
-      // Cho phép "all" để bỏ qua lọc type, giúp UX lọc nhanh hơn
       filterType === "all" || transaction.type === filterType;
+    // Trả về true nếu thỏa cả 2 điều kiện
     return matchesSearch && matchesType;
   });
 
   return (
+    // ========== CONTAINER CHÍNH ==========
     <div className="space-y-6">
+      {/* ========== TIÊU ĐỀ TRANG ========== */}
+      {/* 
+        Phần đầu trang hiển thị:
+        - Tiêu đề: "Lịch sử xuất nhập"
+        - Mô tả: "Theo dõi lịch sử giao dịch xuất nhập kho"
+      */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Lịch sử xuất nhập</h1>
         <p className="text-gray-600 mt-1">
@@ -91,7 +137,12 @@ export function StockHistoryPage() {
         </p>
       </div>
 
-      {/* Filters */}
+      {/* ========== PHẦN TÌM KIẾM VÀ LỌC ========== */}
+      {/* 
+        Section cho phép người dùng:
+        1. Tìm kiếm theo tên sản phẩm hoặc mã phiếu
+        2. Lọc theo loại giao dịch (Tất cả / Nhập / Xuất)
+      */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 flex items-center gap-2">

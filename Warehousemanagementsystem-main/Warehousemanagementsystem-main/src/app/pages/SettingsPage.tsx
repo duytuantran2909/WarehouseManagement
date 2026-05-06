@@ -1,10 +1,31 @@
+// ============================================================================
+// IMPORT REACT HOOKS VÀ ICONS
+// ============================================================================
+// useState: Hook React để quản lý state cấu hình của ứng dụng
+// Icons từ lucide-react:
+// - Save: Icon lưu (cho nút lưu thay đổi)
+// - Bell: Icon chuông (cho cài đặt thông báo)
+// - Lock: Icon khóa (cho bảo mật & sao lưu)
+// - Globe: Icon địa cầu (cho thông tin công ty)
+// - Database: Icon database (cho cài đặt kho hàng)
 import { useState } from "react";
 import { Save, Bell, Lock, Globe, Database } from "lucide-react";
 
+// ============================================================================
+// COMPONENT CHÍNH: TRANG CÀI ĐẶT
+// ============================================================================
+// Trang này cho phép quản lý cấu hình hệ thống bao gồm:
+// - Thông tin công ty (tên, email, điện thoại, địa chỉ)
+// - Cài đặt kho hàng (ngưỡng cảnh báo tồn kho, đơn vị tiền tệ)
+// - Thông báo (email, cảnh báo tồn kho thấp)
+// - Bảo mật & sao lưu (sao lưu tự động, đổi mật khẩu)
 export function SettingsPage() {
+  // ========== STATE CÀI ĐẶT ========== 
+  // Sử dụng một object duy nhất chứa tất cả cài đặt để dễ lưu/cập nhật
+  // Khi người dùng thay đổi, chỉ cần gửi object này lên server
   const [settings, setSettings] = useState({
-    // Gom toàn bộ cấu hình vào một object để dễ lưu/đồng bộ sau này
-    companyName: "Công ty TNHH ABC",
+    // ===== THÔNG TIN CÔNG TY =====
+    companyName: "Công ty TNHH ABC",           // Tên công ty
     email: "contact@abc.com",
     phone: "0912345678",
     address: "123 Nguyễn Huệ, Q.1, TP.HCM",
